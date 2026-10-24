@@ -1,0 +1,4 @@
+[
+  {"name": "Assertion failures", "matchedStatuses": ["failed"]},
+  {"name": "Infrastructure and setup", "matchedStatuses": ["broken"]}
+]

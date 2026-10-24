@@ -1,0 +1,6 @@
+case_id,username,password,expected
+DDT-01,,,required_both
+DDT-02,,Lab5Secure!26,required_username
+DDT-03,volodina_nonexistent,,required_password
+DDT-04,volodina_nonexistent,WrongPassword!1,error
+DDT-05,volodina_nonexistent,wrong,error
