@@ -46,7 +46,13 @@ python -m behave -f pretty -o - -f allure_behave.formatter:AllureFormatter -o al
 
 ## CI/CD
 
-Выбран допустимый заданием GitHub Actions. `.github/workflows/tests.yml` запускается по push, pull_request и вручную. Сначала выполняются Unit/API, затем UI+BDD в Chromium/Firefox. JUnit и Allure сохраняются даже при ошибке. Для удаленного запуска загрузите проект в собственный репозиторий GitHub. Удаленный запуск и его скриншот не подменяются локальным прогоном.
+Выбран допустимый заданием GitHub Actions. `.github/workflows/tests.yml` запускается по push, pull_request и вручную. Сначала выполняются Unit/API, затем UI+BDD в Chromium/Firefox. JUnit и Allure сохраняются даже при ошибке.
+
+Проект опубликован: https://github.com/VolodinaAlexandra/qa_automation_module5.
+Реальный успешный запуск №2: https://github.com/VolodinaAlexandra/qa_automation_module5/actions/runs/40211767783.
+Проверенный коммит: `759b9739d42f194af7734e41e6bc5b3d745cee30`. Результат: Unit 40/40, API 12/12, UI+DDT 10/10 и BDD 2/2 в каждом браузере — 76/76 выполнений Passed, 64 уникальных сценария. Полное время 3 мин 48 с, включая установку зависимостей и браузеров.
+
+Первый запуск №1: https://github.com/VolodinaAlexandra/qa_automation_module5/actions/runs/40211302610 завершился Failed: Chromium не дождался Profile за 5 секунд; страница оставалась Loading. Ожидание URL Profile увеличено до 30 с, имени пользователя — до 15 с. Автоматические перезапуски не добавлялись. Исходное падение, логи, JUnit и Allure обоих запусков включены в архив в `artifacts/ci/run1` и `artifacts/ci/run2`. Удаленные статусы проверены по метаданным GitHub Actions и скачанным артефактам; SHA256 ZIP-артефактов проверены по метаданным GitHub. Эти материалы доступны также на странице Actions, в репозитории Git они исключены через .gitignore.
 
 ## Selenoid
 

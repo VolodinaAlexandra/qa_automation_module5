@@ -1,0 +1,6 @@
+{
+  "chrome": {"default": "120.0", "versions": {
+    "120.0": {"image": "selenoid/chrome:120.0", "port": "4444"}}},
+  "firefox": {"default": "121.0", "versions": {
+    "121.0": {"image": "selenoid/firefox:121.0", "port": "4444"}}}
+}
