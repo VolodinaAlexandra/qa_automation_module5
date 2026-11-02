@@ -11,5 +11,6 @@
 7. Playwright Python, браузеры и установка: https://playwright.dev/python/docs/browsers
 8. GitHub Actions, синтаксис workflow: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
 9. Allure Report: https://allurereport.org/docs/
+10. Дополнительный пример проекта qa_automation_module5.rar, предоставленный пользователем: сопоставление организации фикстур, POM, сохранения прогонов и контрольных сумм версии кода. Чужие авторские данные и проверки другого модуля в работу не переносились.
 
 В образце встречаются условные результаты и технические неточности. Фактические значения данного проекта получены из сохраненных прогонов.
