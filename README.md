@@ -26,7 +26,7 @@ python -m behave -f pretty -o - -f allure_behave.formatter:AllureFormatter -o al
 ```
 
 Для установленного Microsoft Edge: добавьте `--browser-channel msedge` к pytest; для Behave установите `$env:BROWSER_CHANNEL = 'msedge'`.
-Полный прогон: `./scripts/run_tests.ps1`. Установите Allure CLI 2 и Java 17+, затем выполните `allure generate allure-results --clean -o allure-report` и `allure open allure-report`.
+Полный прогон: `./scripts/run_tests.ps1`. Скрипт сохраняет прежний allure-results в artifacts перед запуском, чтобы результаты разных прогонов не смешивались. Установите Allure CLI 2 и Java 17+, затем выполните `allure generate allure-results --clean -o allure-report` и `allure open allure-report`.
 `scripts/generate_allure.ps1` переносит историю предыдущего реального прогона. Содержимое config/allure-categories.json скопируйте в allure-results/categories.json.
 
 ## Архитектура
@@ -34,6 +34,7 @@ python -m behave -f pretty -o - -f allure_behave.formatter:AllureFormatter -o al
 - app/validators.py: собственные функции валидации и маскирования; их покрытие не является покрытием исходного кода сайта DemoQA.
 - support/api.py: requests.Session, таймауты, временные пользователи с UUID, удаление через finally, маскирование паролей и токенов в логах.
 - pages/: все UI-локаторы и ожидания инкапсулированы в Page Object.
+- LoginPage проверяет заполнение полей, ожидает реальный ответ GenerateToken до 30 секунд и прикладывает его в Allure с маскированием секретов. Для пустых полей HTTP не ожидается. Успех входа требует Profile и правильного имени пользователя.
 - tests/unit/: 40 параметризованных проверок и фикстура учетных данных.
 - tests/api/: 12 проверок Books, Book, User, Login, GenerateToken, Authorized.
 - tests/ui/: 5 основных тестов и 5 наборов CSV.
@@ -70,11 +71,12 @@ python -m behave -f pretty -o - -f allure_behave.formatter:AllureFormatter -o al
 
 ## Сохраненные результаты
 
-- artifacts/run1: 64 Passed из 64.
-- artifacts/run2: 63 Passed, 1 Failed из 64; в test_logout предварительный вход с валидными данными был отклонен стендом.
-- artifacts/diagnostic-logout.xml: отдельный контрольный повтор прошел; исходное падение из метрик не исключалось.
-- artifacts/firefox.xml: 10 UI-проверок Passed.
+- artifacts/run3 и artifacts/run4: два новых полных прогона по 64 Passed из 64, без повторных попыток и пропусков. UI-05 (test_logout) прошел в обоих.
+- artifacts/firefox-final.xml: 10 UI-проверок Passed в Firefox 157; основной браузер — Edge 156.0.4314.58.
+- artifacts/diagnosis-nov02/diagnosis.json: шесть последовательных диагностических входов/выходов Passed; отправленные данные совпали с ожидаемыми.
+- artifacts/run1: исторический прогон 64/64; artifacts/run2: исторические 63 Passed и 1 Failed. Их журналы и PNG сохранены.
+- artifacts/diagnostic-logout.xml: прежний отдельный контрольный повтор Passed.
 - app: 25/25 исполняемых строк и 14/14 ветвей; C0/C1 100%.
-- Итоговый Allure показывает второй полный прогон и историю первого; Pass Rate 98,4375%, наблюдаемая смена результата 1/64.
+- Итоговый Allure показывает run4: Pass Rate 100%; история включает все четыре полных прогона. Между run3 и run4 смен результата нет (0/64). В старой паре run1/run2 была одна смена (1/64).
 
-Автоматические перезапуски не используются. Причина единичного отказа входа не установлена. Машинные даты исходных журналов сохраняются фактическими; дата оформления работы — 26.10.2026.
+Автоматические перезапуски не используются. Первопричина старого отказа не установлена: в исходном прогоне не был сохранен сетевой ответ GenerateToken. Недостатки синхронизации и диагностики исправлены; новые прогоны прошли. Машинные даты журналов сохраняются фактическими; дата оформления работы — 26.10.2026.

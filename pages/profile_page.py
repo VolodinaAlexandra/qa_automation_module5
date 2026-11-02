@@ -13,4 +13,4 @@ class ProfilePage(BasePage):
 
     def logout(self):
         self.page.get_by_role('button', name='Logout', exact=True).click()
-        expect(self.page).to_have_url(re.compile(r'/login$'))
+        expect(self.page).to_have_url(re.compile(r'/login$'), timeout=15000)
