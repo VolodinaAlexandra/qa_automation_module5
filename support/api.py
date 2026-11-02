@@ -24,7 +24,7 @@ class BookStoreAPI:
             return response
 
     @contextmanager
-    def temporary_user(self):
+    def temporary_user(self, authorize=True):
         credentials = {'userName': 'volodina_' + uuid4().hex[:14],
                        'password': 'Lab5Secure!26'}
         created = self.request('POST', '/Account/v1/User', json=credentials)
@@ -32,17 +32,21 @@ class BookStoreAPI:
         user_id = created.json()['userID']
         token = None
         try:
-            authorized = self.request('POST', '/Account/v1/GenerateToken',
-                                      json=credentials)
-            assert authorized.status_code == 200, authorized.text
-            token = authorized.json().get('token')
-            assert token, 'Token generation did not authorize the user'
+            if authorize:
+                authorized = self.request('POST', '/Account/v1/GenerateToken',
+                                          json=credentials)
+                assert authorized.status_code == 200, authorized.text
+                token = authorized.json().get('token')
+                assert token, 'Token generation did not authorize the user'
             yield {**credentials, 'userID': user_id, 'token': token}
         finally:
-            # UI login rotates the token; request a fresh token for cleanup.
-            response = self.request('POST', '/Account/v1/GenerateToken',
-                                    json=credentials)
-            token = response.json().get('token')
+            # Read the current token instead of issuing a duplicate token.
+            response = self.request('POST', '/Account/v1/Login', json=credentials)
+            token = response.json().get('token') if response.content else None
+            if not token:
+                response = self.request('POST', '/Account/v1/GenerateToken',
+                                        json=credentials)
+                token = response.json().get('token')
             assert token, f'Cannot clean up temporary user {user_id}'
             deleted = self.request('DELETE', '/Account/v1/User/' + user_id,
                                    headers={'Authorization': 'Bearer ' + token})

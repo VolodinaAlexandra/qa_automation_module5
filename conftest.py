@@ -24,6 +24,13 @@ def account(api):
         yield user
 
 
+@pytest.fixture
+def ui_account(api):
+    # The UI must perform the first authorization itself.
+    with api.temporary_user(authorize=False) as user:
+        yield user
+
+
 @pytest.fixture(scope='session')
 def browser_context_args(browser_context_args):
     return {**browser_context_args, 'viewport': {'width': 1440, 'height': 1000}}

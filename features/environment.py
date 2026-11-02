@@ -23,7 +23,7 @@ def before_scenario(context, scenario):
     context.page = context.browser_context.new_page()
     context.page.set_default_timeout(15000)
     context.login_page = LoginPage(context.page, context.base_url)
-    context.user_manager = context.api.temporary_user()
+    context.user_manager = context.api.temporary_user(authorize=False)
     try:
         context.account = context.user_manager.__enter__()
     except Exception:
